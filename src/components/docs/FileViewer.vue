@@ -18,14 +18,6 @@ export default {
     SourceButton,
   },
 
-  convertMarkdown(content) {
-    return content
-      // Replace $$$ref with the branch/tag
-      .replace(/\$\$\$ref/g, this.tag)
-      // Replace long url with short ref
-      .replace(/https:\/\/dbots\.js\.org\/#([\w/]+)/, '#$1');
-  },
-
   data() {
     if (!this.docs.custom[this.$route.params.category]) return { file: null };
     return {
@@ -35,8 +27,14 @@ export default {
 
   computed: {
     html() {
+      const convertMarkdown = content => content
+        // Replace $$$ref with the branch/tag
+        .replace(/\$\$\$ref/g, this.tag)
+        // Replace long url with short ref
+        .replace(/https:\/\/dbots\.js\.org\/#([\w/]+)/, '#$1');
+
       let content;
-      if (this.file.type === 'md') content = this.convertMarkdown(this.file.content);
+      if (this.file.type === 'md') content = convertMarkdown(this.file.content);
       else content = `# ${this.file.name}\n\`\`\`${this.file.type}\n${this.file.content}\n\`\`\``;
       return Vue.filter('marked')(content);
     },
